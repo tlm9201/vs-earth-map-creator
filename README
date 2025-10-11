@@ -1,0 +1,54 @@
+vs-earth-map-creator
+============================
+Make cool earth maps in Vintage Story (VS)
+
+Requirements
+-------------------
+dotnet 8
+vintage story
+gdal
+python3
+
+Directories
+-------------------
+.
+├── CakeBuild         - build
+├── EarthMapCreator   - vs code mod
+└── Geo               - geospatial processing scripts
+
+Usage
+-------------------
+under Geo/ run pip install -r requirements.txt
+then, set the desired map resolution and long/lat bounds under Geo/scripts/config_map.sh
+run launch.sh
+some bitmap files will be output to work/build
+
+the vintage story mod takes these bitmap files and overrides the vanilla generation.
+these bitmap files should go into the config directory (~/.config/VintagestoryData/EarthMap/)
+
+current generation only supports multiples of 512 (vintage story region size)
+set the size of the map as appropriate under ModConfig/EarthMapCreator.json
+
+create a world, then run the command /earthmap generate.
+the map is generated where chunk 0,0 (top left of the world) is the top left of the map.
+
+Limitations/TODO
+-------------------
+- Map generation must be a multiple of 512 blocks.
+- Maximum 255 height range
+- No bathymetry
+- Much more data is missing that can be applied to VS (i.e. rock strata, ores)
+- Vintage Story - map resolutions/padding are hardcoded on the client
+- Alot of values are hardcoded
+
+Data Used/Acknowledgments
+-------------------
+- GMTED 250m DEM: https://edcintl.cr.usgs.gov/downloads/sciweb1/shared/topo/downloads/GMTED/Grid_ZipFiles/ds75_grd.zip
+- OpenStreetMap: https://www.openstreetmap.org/copyright
+- Natural Earth: https://www.naturalearthdata.com/
+- WorldClim: https://www.worldclim.org/data/worldclim21.html
+- Reverse engineered existing Minecraft map programs, EarthTiles, earthtomc, worldpainter
+
+License 
+-------------------
+vs-earth-map-creator is licensed under MIT - see ./LICENSE

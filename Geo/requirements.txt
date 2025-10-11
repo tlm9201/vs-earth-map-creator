@@ -1,0 +1,5 @@
+certifi==2025.7.14
+GDAL==3.11.3
+gdal-utils==3.11.4.0
+numpy==2.3.3
+pyproj==3.7.1

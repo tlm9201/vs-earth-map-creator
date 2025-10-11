@@ -1,0 +1,10 @@
+bin/
+.idea/
+.vscode/
+Releases/
+datasets/
+obj/
+Folder.DotSettings.user
+build/
+venv/
+work/
