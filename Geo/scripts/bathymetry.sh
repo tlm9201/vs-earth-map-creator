@@ -13,10 +13,10 @@ if [[ ! -f $BATHY_DIR/gebco_2025_sub_ice_topo.zip ]]; then
 fi
 
 cd $BATHY_DIR
-save_dataset_locally "gebco_2025_sub_ice_topo.zip"
+# save_dataset_locally "gebco_2025_sub_ice_topo.zip"
 
 log "Unzipping bathymetry data"
-unzip -o "gebco_2025_sub_ice_topo.zip"
+# unzip -o "gebco_2025_sub_ice_topo.zip"
 
 log "Processing bathymetry data"
 
@@ -29,29 +29,34 @@ gdalwarp -multi -co NUM_THREADS=ALL_CPUS -wo NUM_THREADS=ALL_CPUS \
     NETCDF:"GEBCO_2025_sub_ice.nc":elevation "crop.tif"
 
 # Step 2: Calculate the final raster
-log "Scaling bathymetry data to the final output range..."
+log "Scaling bathymetry data..."
 
-# Get the statistics from the cropped file to find the true min/max depth
+# Get the true minimum depth from the cropped file.
 stats=$(gdalinfo -mm crop.tif | tr ',' '.')
 min_val=$(echo "$stats" | grep "Computed Min/Max" | cut -d "," -f 1 | cut -d "=" -f 2 | tr -d ' ')
+log "Minimum depth (min_val) in this area is $min_val meters."
 
-# Max depth is the absolute value of the minimum value (e.g., -6000m -> 6000)
-# Use awk for floating-point multiplication
-max_depth=$(echo "$min_val" | awk '{print $1 * -1}')
-log "Maximum depth in this area is $max_depth meters."
-
-# Prevent division by zero if there is no ocean in the crop
-if (( $(echo "$max_depth <= 0" | bc -l) )); then
-    max_depth=1
+# Prevent errors if there is no ocean in the scene
+if (( $(echo "$min_val >= 0" | bc -l) )); then
+    min_val=-1
 fi
 
-# Define the sea level and max depth values from config
-sea_level_val=$BATHY_SCALE_SEALEVEL
-max_depth_val=$BATHY_SCALE_MAXDEPTH
+# Define the target RGB values from config
+to_high=$BATHY_SCALE_SEALEVEL # e.g., 110 (value for sea level)
+to_low=$BATHY_SCALE_MAXDEPTH  # e.g., 50 (value for deepest point)
 
-# where A is ocean (A<0), apply the scaling formula; otherwise, the value is 0.
-scaling_logic="$sea_level_val + (A * -1) * ($max_depth_val - $sea_level_val) / ($max_depth * 1.0)"
+# Pre-calculate the absolute value of min_val to simplify the formula
+# and avoid shell parsing errors with double negatives.
+abs_min_val=$(echo "$min_val" | awk '{print $1 * -1}')
+
+# This simplified formula maps the raw depth [min_val -> 0] to the target RGB range [to_low -> to_high].
+# It is mathematically identical to the previous version but is much less likely to be misinterpreted by the shell.
+# (A + abs_min_val) gives the depth from the bottom, which we then normalize.
+scaling_logic="((A + $abs_min_val) / ($abs_min_val * 1.0)) * ($to_high - $to_low) + $to_low"
 calc_expr="where(A < 0, $scaling_logic, 0)"
+
+log "DEBUG: Scaling variables -> abs_min_val=$abs_min_val, to_high=$to_high, to_low=$to_low"
+log "DEBUG: Full calculation string -> $calc_expr"
 
 gdal_calc.py -A crop.tif --outfile="$WORK_DIR/bathymetry/cropped_bathy.tif" \
     --calc="$calc_expr" \
