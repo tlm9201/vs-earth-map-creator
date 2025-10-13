@@ -13,10 +13,10 @@ if [[ ! -f $BATHY_DIR/gebco_2025_sub_ice_topo.zip ]]; then
 fi
 
 cd $BATHY_DIR
-# save_dataset_locally "gebco_2025_sub_ice_topo.zip"
+save_dataset_locally "gebco_2025_sub_ice_topo.zip"
 
 log "Unzipping bathymetry data"
-# unzip -o "gebco_2025_sub_ice_topo.zip"
+unzip -o "gebco_2025_sub_ice_topo.zip"
 
 log "Processing bathymetry data"
 
