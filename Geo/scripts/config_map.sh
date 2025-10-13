@@ -58,5 +58,15 @@ bathymetry="1" # TODO
 download_datasets_locally="1"
 force_local_datasets_update="0"
 
+# --- Custom Bathymetry Scaling ---
+# Set to 1 to enable custom scaling, 0 to use the default full range (0-255).
+ENABLE_BATHY_CUSTOM_SCALE=1
+
+# Vintage story sea level (default 110) (max 255)
+BATHY_SCALE_SEALEVEL=110
+
+# Vintage story maximum ocean depth (default 50?)
+BATHY_SCALE_MAXDEPTH=50
+
 # in pixels (blocks)
 major_river_width=5

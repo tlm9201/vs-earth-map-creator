@@ -32,3 +32,11 @@ eval $GDAL_TRANSLATE -ot Byte tree.tif $BUILD_DIR/tree.bmp
 # river
 eval $GDAL_TRANSLATE -ot Byte rivers.tif $WORK_DIR/river.bmp
 magick $WORK_DIR/river.bmp -channel RGB -threshold 90% -blur 0x5 -posterize 10 -level 0%,100%,1.0 $BUILD_DIR/river.bmp
+
+# bathymetry
+if [ -f "$WORK_DIR/bathymetry/cropped_bathy.tif" ]; then
+  echo "Converting final scaled bathymetry TIFF to BMP"
+  eval $GDAL_TRANSLATE -ot Byte bathymetry/cropped_bathy.tif $BUILD_DIR/bathymetry_heightmap.bmp
+else
+  echo "Bathymetry file (cropped_bathy.tif) not found, skipping BMP conversion."
+fi
