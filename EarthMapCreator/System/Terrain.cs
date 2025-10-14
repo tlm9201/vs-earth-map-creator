@@ -156,7 +156,7 @@ public class Terrain : ModSystem
                 // y is the top of this column
                 // ybase is the start
                 // fill from ybase to y
-                int y = bisectedHeightMap[lx, lz];
+                int y = Math.Min(bisectedHeightMap[lx, lz], _api.WorldManager.MapSizeY - 2);
                 int waterBase = y;
                 if (y < seaLevel) y = seaLevel - 1;
                 

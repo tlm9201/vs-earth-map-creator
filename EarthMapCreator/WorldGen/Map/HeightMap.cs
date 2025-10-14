@@ -1,6 +1,7 @@
 using System;
 using SkiaSharp;
 using Vintagestory.API.Datastructures;
+using Vintagestory.ServerMods;
 
 namespace EarthMapCreator;
 
@@ -10,12 +11,7 @@ public class HeightMap : DataMap
     const int SeaFloor = 90;
     const int SeaLevel = 110;
 
-    private const int MaxHeight = 250;
-    const int HeightRange = MaxHeight - SeaLevel;
-
-    // assume for now that max vs height will always be 256
     // sea level: 110
-    // 256 - 110 = range of 146 above sea level
     public HeightMap(string filePath, string landcoverFile, RiverMap rivers) : base(filePath)
     {
         SKBitmap landcoverBmp = LoadBitmap(landcoverFile);
@@ -43,14 +39,13 @@ public class HeightMap : DataMap
                         SKColor lcPixel = landcoverBmp.GetPixel(posX, posZ);
                         SKColor heightPixel = Bitmap.GetPixel(posX, posZ);
                         lcPixel.ToHsv(out _, out _, out float lcBrightness);
-                        heightPixel.ToHsv(out _, out _, out float heightBrightness);
 
                         bool isLand = lcBrightness >= 50.0;
                         int height = SeaFloor;
 
                         if (isLand)
                         {
-                            height = SeaLevel + (int) Math.Floor(HeightRange * (heightBrightness / 100.0));
+                            height = SeaLevel + heightPixel.Red;
                         }
 
                         // rivers/lakes
@@ -62,7 +57,7 @@ public class HeightMap : DataMap
                             
                             float riverNormalized = (float) diffFromMin / maxDiff;
                             int riverDepth = (int) (EarthMapCreator.config.RiverDepth * riverNormalized) + 1;
-                            height = height - riverDepth;
+                            height -= riverDepth;
                         }
 
                         IntValues[x][z].SetInt(i, j, height);

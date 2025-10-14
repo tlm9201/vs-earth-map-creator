@@ -53,6 +53,7 @@ LON_MAX_FINAL=$LON_MAX_4326
 
 FINAL_RES="300"
 FORCE_FINAL_PROJ="ESRI:54080"
+VINTAGE_STORY_BUILD_LIMIT=255
 vertical_terrain_exaggeration="1"
 bathymetry="1" # TODO
 download_datasets_locally="1"

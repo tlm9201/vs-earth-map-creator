@@ -25,4 +25,4 @@ log "Processing DEM data"
 
 gdalwarp -multi -co NUM_THREADS=ALL_CPUS -wo NUM_THREADS=ALL_CPUS --config GDAL_CACHEMAX $GDAL_CACHEMAX -wm $GDAL_WM -te $LON_MIN_FINAL $LAT_MIN_FINAL $LON_MAX_FINAL $LAT_MAX_FINAL $output_projection -r cubicspline -te_srs $bbox_srs -co COMPRESS=lzw -co predictor=2 -co BIGTIFF=YES -ot Int16 ds75_grd/w001000.adf crop.tif
 
-gdal_calc.py -A  crop.tif --co="COMPRESS=lzw" --co="predictor=2" --co="BIGTIFF=YES" --NoDataValue=-32768 --format="gtiff" --calc="(A*(A>-999)*"$vertical_terrain_multiplier_decimalprecision")" --outfile="$WORK_DIR/cropped_dem.tif"
+gdal_calc.py -A  crop.tif --co="COMPRESS=lzw" --co="predictor=2" --co="BIGTIFF=YES" --NoDataValue=-32768 --format="gtiff" --calc="(A*(A>-999)*"$vertical_terrain_exaggeration")" --outfile="$WORK_DIR/cropped_dem.tif"

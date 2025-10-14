@@ -17,11 +17,8 @@ fi
 # land mask
 eval $GDAL_TRANSLATE -ot Byte land_osm_mask.tif $BUILD_DIR/landmask.bmp
 
-# dem
-MAX_HM_V=$(gdalinfo -mm cropped_dem.tif | grep "Computed Min/Max" | cut -d ","  -f2-)
-echo $MAX_HM_V
 # real max is 8718
-eval $GDAL_TRANSLATE -scale 0.0 8718.0 0 255 -ot Byte cropped_dem.tif $BUILD_DIR/heightmap.bmp
+eval $GDAL_TRANSLATE -scale 0.0 8718 0 $VINTAGE_STORY_BUILD_LIMIT -ot Byte cropped_dem.tif $BUILD_DIR/heightmap.bmp
 
 # climate
 eval $GDAL_TRANSLATE -ot Byte climate.tif $BUILD_DIR/climate.bmp

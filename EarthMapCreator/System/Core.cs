@@ -1,6 +1,7 @@
 ﻿using System;
 using Vintagestory.API.Common;
 using Vintagestory.API.Config;
+using Vintagestory.API.Server;
 
 namespace EarthMapCreator;
 
@@ -9,7 +10,7 @@ public class EarthMapCreator : ModSystem
     public static Config config;
     public static MapLayers Layers; 
 
-    public override void Start(ICoreAPI api)
+    public override void StartServerSide(ICoreServerAPI api)
     {
         LoadConfig(api);
         LoadMapLayers(api);
