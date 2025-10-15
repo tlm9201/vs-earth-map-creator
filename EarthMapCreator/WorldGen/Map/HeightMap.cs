@@ -1,11 +1,11 @@
 using System;
-using SkiaSharp;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Vintagestory.API.Datastructures;
-using Vintagestory.ServerMods;
 
 namespace EarthMapCreator;
 
-public class HeightMap : DataMap
+public class HeightMap : DataMap<Rgb48>
 {
     // 108
     const int SeaFloor = 90;
@@ -14,7 +14,7 @@ public class HeightMap : DataMap
     // sea level: 110
     public HeightMap(string filePath, string landcoverFile, RiverMap rivers) : base(filePath)
     {
-        SKBitmap landcoverBmp = LoadBitmap(landcoverFile);
+        Image<Rgb24> landcoverBmp = LoadBitmap<Rgb24>(landcoverFile);
         
         var watch = System.Diagnostics.Stopwatch.StartNew();
         int xRegions = Bitmap.Width / 512;
@@ -36,16 +36,15 @@ public class HeightMap : DataMap
                     {
                         int posX = x * 512 + i;
                         int posZ = z * 512 + j;
-                        SKColor lcPixel = landcoverBmp.GetPixel(posX, posZ);
-                        SKColor heightPixel = Bitmap.GetPixel(posX, posZ);
-                        lcPixel.ToHsv(out _, out _, out float lcBrightness);
+                        Rgb24 lcPixel = landcoverBmp[posX, posZ];
+                        Rgb48 heightPixel = Bitmap[posX, posZ];
 
-                        bool isLand = lcBrightness >= 50.0;
+                        bool isLand = lcPixel.R > 0;
                         int height = SeaFloor;
 
                         if (isLand)
                         {
-                            height = SeaLevel + heightPixel.Red;
+                            height = SeaLevel + heightPixel.R;
                         }
 
                         // rivers/lakes

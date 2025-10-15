@@ -1,10 +1,10 @@
 using System;
-using SkiaSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using Vintagestory.API.Datastructures;
 
 namespace EarthMapCreator;
 
-public class TreeMap : DataMap
+public class TreeMap : DataMap<Rgb24>
 {
     public TreeMap(string filePath) : base(filePath)
     {
@@ -28,8 +28,8 @@ public class TreeMap : DataMap
                     {
                         int posX = x * 512 + i;
                         int posZ = z * 512 + j;
-                        SKColor pixel = Bitmap.GetPixel(posX, posZ);
-                        byte treeAmount = pixel.Red;
+                        Rgb24 pixel = Bitmap[posX, posZ];
+                        byte treeAmount = pixel.R;
                         
                         IntValues[x][z].SetInt(i, j, treeAmount);
                     }
