@@ -12,14 +12,6 @@ vs region size is 512, i only take in a map size that is divisble by this for si
 this would be straightforward to implement, we just divide the map into its divisible sections,
 then when that generation is complete, we can generate the excess on the edges.
 
-- higher DEM limits (255+) 
-the mod only reads in height from one rgb channel, since vs allows much higher height limits than minecraft,
-it would be nice to read in height from all three channels. another option could be to use 2 channels for height,
-and the last channel for bathymetry.
-
-- use some lossless compressed format instead of bmp
-png
-
 - generate map in parts
 add a way to generate very large maps in multiple parts. or if a generation crashes,
 we can safely return to where we stopped and continue generation.

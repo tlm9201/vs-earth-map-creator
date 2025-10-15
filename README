@@ -36,7 +36,6 @@ the map is generated where chunk 0,0 (top left of the world) is the top left of 
 Limitations/TODO
 -------------------
 - Map generation must be a multiple of 512 blocks.
-- Maximum 255 height range
 - No bathymetry
 - Much more data is missing that can be applied to VS (i.e. rock strata, ores)
 - Vintage Story - map resolutions/padding are hardcoded on the client
