@@ -18,7 +18,7 @@ fi
 eval $GDAL_TRANSLATE -ot Byte land_osm_mask.tif $BUILD_DIR/landmask.png
 
 # real max is 8718
-eval $GDAL_TRANSLATE -scale 0.0 8718 0 $VINTAGE_STORY_BUILD_LIMIT -ot UInt16 cropped_dem.tif $BUILD_DIR/heightmap.png
+eval $GDAL_TRANSLATE -scale 0.0 8718 0 $MAX_DEM_HEIGHT -ot UInt16 cropped_dem.tif $BUILD_DIR/heightmap.png
 
 # bathymetry
 

@@ -54,6 +54,8 @@ LON_MAX_FINAL=$LON_MAX_4326
 FINAL_RES="300"
 FORCE_FINAL_PROJ="ESRI:54080"
 VINTAGE_STORY_BUILD_LIMIT=255
+VINTAGE_STORY_SEA_LEVEL=110
+MAX_DEM_HEIGHT=$(echo $VINTAGE_STORY_BUILD_LIMIT-$VINTAGE_STORY_SEA_LEVEL | bc)
 
 # in order to keep coastline intact, we set aside some threshold def:20m (blocks)
 # must be positive and less than MAX_BATHY_DEPTH
