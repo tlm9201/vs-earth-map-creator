@@ -36,7 +36,6 @@ the map is generated where chunk 0,0 (top left of the world) is the top left of 
 Limitations/TODO
 -------------------
 - Map generation must be a multiple of 512 blocks.
-- No bathymetry
 - Much more data is missing that can be applied to VS (i.e. rock strata, ores)
 - Vintage Story - map resolutions/padding are hardcoded on the client
 - Alot of values are hardcoded
@@ -45,6 +44,7 @@ See ./TODO for a more comprehensive list
 Data Used/Acknowledgments
 -------------------
 - GMTED 250m DEM: https://edcintl.cr.usgs.gov/downloads/sciweb1/shared/topo/downloads/GMTED/Grid_ZipFiles/ds75_grd.zip
+- GEBCO 2025 (bathymetry): https://www.gebco.net/
 - OpenStreetMap: https://www.openstreetmap.org/copyright
 - Natural Earth: https://www.naturalearthdata.com/
 - WorldClim: https://www.worldclim.org/data/worldclim21.html

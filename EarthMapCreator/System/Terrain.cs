@@ -44,11 +44,13 @@ public class Terrain : ModSystem
         int chunkZ = request.ChunkZ;
         
         IntDataMap2D heightMap = EarthMapCreator.Layers.HeightMap.IntValues[regionX][regionZ];
+        IntDataMap2D bathyMap = EarthMapCreator.Layers.BathymetryMap.IntValues[regionX][regionZ];
         IntDataMap2D riverMap = EarthMapCreator.Layers.RiverMap.IntValues[regionX][regionZ];
         
         IServerChunk[] chunks = request.Chunks;
         
         int[,] bisectedHeightMap = CutHeightMapForChunk(heightMap, new Vec2i(chunkX, chunkZ), new Vec2i(regionX, regionZ));
+        int[,] bisectedBathyMap = CutHeightMapForChunk(bathyMap, new Vec2i(chunkX, chunkZ), new Vec2i(regionX, regionZ));
         
         var minY = int.MaxValue;
         var maxY = int.MinValue;
@@ -153,13 +155,22 @@ public class Terrain : ModSystem
                 // y is the top of this column
                 // ybase is the start
                 // fill from ybase to y
+                bool freshWater = IsFreshWaterHere(config, riverMap, rx, rz);
+
                 int y = Math.Min(bisectedHeightMap[lx, lz], _api.WorldManager.MapSizeY - 2);
                 int waterBase = y;
-                if (y < seaLevel) y = seaLevel - 1;
+                if (y < seaLevel && !freshWater) y = seaLevel - 1;
                 
                 terrainHeightMap[mapIdx] = (ushort)(yBase - 1);
                 rainHeightMap[mapIdx] = (ushort)(yBase - 1);
-                bool freshWater = IsFreshWaterHere(config, riverMap, rx, rz);
+
+                // if this is fresh water, then we invert based off
+                // the delta on the bathymetry map
+                // and set this value to the top of the column
+                if (freshWater)
+                {
+                    y = Math.Min(y + bisectedBathyMap[lx, lz] - 1, _api.WorldManager.MapSizeY - 2);
+                }
 
                 int block;
                 
@@ -169,7 +180,7 @@ public class Terrain : ModSystem
                     int chunkIdx = ChunkIndex3d(lx, ly, lz);
                     chunkData = chunks[yy / chunkSize].Data;
                     
-                    if (((yy < seaLevel && y < seaLevel) || freshWater) && yy > waterBase)
+                    if ((freshWater || (yy < seaLevel && y < seaLevel)) && yy > waterBase)
                     {
                         if (yy == seaLevel - 1)
                         {

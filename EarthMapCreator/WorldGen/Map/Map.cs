@@ -9,6 +9,7 @@ namespace EarthMapCreator;
 
 public class MapLayers {
     public DataMap<Rgb48> HeightMap { get; private set; }
+    public DataMap<Rgb48> BathymetryMap { get; private set; }
     public DataMap<Rgb24> ClimateMap { get; private set; }
     public DataMap<Rgb24> TreeMap { get; private set; }
     public DataMap<Rgb24> RiverMap { get; private set; }
@@ -23,13 +24,15 @@ public class MapLayers {
         }
         
         var heightmapFile = files.First(n => Path.GetFileName(n) == "heightmap.png");
+        var bathymetryFile = files.First(n => Path.GetFileName(n) == "bathymetry.png");
         var landcoverFile = files.First(n => Path.GetFileName(n) == "landmask.png");
         var climateFile = files.First(n => Path.GetFileName(n) == "climate.png");
         var treeFile = files.First(n => Path.GetFileName(n) == "tree.png");
         var riverFile = files.First(n => Path.GetFileName(n) == "river.png");
         
         RiverMap = new RiverMap(riverFile);
-        HeightMap = new HeightMap(heightmapFile, landcoverFile, (RiverMap)RiverMap);
+        BathymetryMap = new BathymetryMap(bathymetryFile);
+        HeightMap = new HeightMap(heightmapFile, landcoverFile, (RiverMap)RiverMap, (BathymetryMap)BathymetryMap);
         ClimateMap = new ClimateMap(climateFile);
         TreeMap = new TreeMap(treeFile);
     }

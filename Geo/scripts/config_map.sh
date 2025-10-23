@@ -54,6 +54,14 @@ LON_MAX_FINAL=$LON_MAX_4326
 FINAL_RES="300"
 FORCE_FINAL_PROJ="ESRI:54080"
 VINTAGE_STORY_BUILD_LIMIT=255
+
+# in order to keep coastline intact, we set aside some threshold def:20m (blocks)
+# must be positive and less than MAX_BATHY_DEPTH
+BATHY_PADDING=20
+# depths 0-100 (def) are put into the range of 0 -> BATHY_PADDING
+BATHY_PADDING_THRESHOLD=100
+MAX_BATHY_DEPTH=$(echo "80-$BATHY_PADDING" | bc)
+
 vertical_terrain_exaggeration="1"
 bathymetry="1" # TODO
 download_datasets_locally="1"

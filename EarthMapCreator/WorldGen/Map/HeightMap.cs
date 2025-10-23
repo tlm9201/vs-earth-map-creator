@@ -12,7 +12,7 @@ public class HeightMap : DataMap<Rgb48>
     const int SeaLevel = 110;
 
     // sea level: 110
-    public HeightMap(string filePath, string landcoverFile, RiverMap rivers) : base(filePath)
+    public HeightMap(string filePath, string landcoverFile, RiverMap rivers, BathymetryMap bathymetry) : base(filePath)
     {
         Image<Rgb24> landcoverBmp = LoadBitmap<Rgb24>(landcoverFile);
         
@@ -38,9 +38,9 @@ public class HeightMap : DataMap<Rgb48>
                         int posZ = z * 512 + j;
                         Rgb24 lcPixel = landcoverBmp[posX, posZ];
                         Rgb48 heightPixel = Bitmap[posX, posZ];
-
                         bool isLand = lcPixel.R > 0;
-                        int height = SeaFloor;
+                        int bathymetryDepth = bathymetry.IntValues[x][z].GetInt(i, j);
+                        int height = SeaLevel - bathymetryDepth;
 
                         if (isLand)
                         {
@@ -51,12 +51,28 @@ public class HeightMap : DataMap<Rgb48>
                         int riverHere = rivers.IntValues[x][z].GetInt(i, j);
                         if (riverHere > 0 && isLand)
                         {
-                            int diffFromMin = riverHere - rivers.Min;
-                            int maxDiff = 255 - rivers.Min;
+                            bool isLake = bathymetryDepth > 0;
+
+                            if (isLake)
+                            {
+                                // some depth value already exists, apply it
+                                height -= bathymetryDepth;
+                            }
+                            else
+                            {
+                                int diffFromMin = riverHere - rivers.Min;
+                                int maxDiff = 255 - rivers.Min;
                             
-                            float riverNormalized = (float) diffFromMin / maxDiff;
-                            int riverDepth = (int) (EarthMapCreator.config.RiverDepth * riverNormalized) + 1;
-                            height -= riverDepth;
+                                float riverNormalized = (float) diffFromMin / maxDiff;
+                                int riverDepth = (int) (EarthMapCreator.config.RiverDepth * riverNormalized) + 1;
+
+                                // we have some water but no bathy value,
+                                // therefore we burn the river value into the bathy
+                                // map so we can invert it later
+                                bathymetry.IntValues[x][z].SetInt(i, j, riverDepth);
+
+                                height -= riverDepth;
+                            }
                         }
 
                         IntValues[x][z].SetInt(i, j, height);

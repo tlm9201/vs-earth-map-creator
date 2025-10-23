@@ -14,6 +14,7 @@ VSERR_NO_NE_LAKES="12"
 VSERR_NO_DEM="20"
 VSERR_NO_TREECANOPY="30"
 VSERR_NO_CLIMATE="40"
+VSERR_NO_BATHYMETRY="50"
 
 log() {
 	logfile=$MAIN_DIR/log.txt
@@ -93,6 +94,7 @@ LON_MAX_FINAL_4326=$(echo $info4326 | cut -d " " -f 5)
 
 # START
 source $SCRIPTS/topography.sh
+source $SCRIPTS/bathymetry.sh
 source $SCRIPTS/land.sh
 source $SCRIPTS/climate.sh
 source $SCRIPTS/tree.sh
